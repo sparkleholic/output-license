@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+
+var path = require('path');
+var findLicense = require('../output-license.js');
+var dir = path.join(__dirname, '../node_modules');
+if (process.argv.length > 2) {
+    dir = path.resolve(process.argv[2]);
+}
+findLicense(dir);
+

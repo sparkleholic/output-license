@@ -1,0 +1,22 @@
+{
+  "name": "output-license",
+  "version": "0.0.1",
+  "description": "Output license info of modules existing under node_modules",
+  "main": "output-license.js",
+  "bin" : {
+      "output-license": "./bin/output-license"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "license"
+  ],
+  "author": "Junil Kim",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.4.1",
+    "cli-table": "^0.3.1",
+    "npmlog": "^4.0.0"
+  }
+}
