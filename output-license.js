@@ -54,7 +54,6 @@ function walkDirAsync (dir, name, level) {
 
 function findLicenses(dir) {
     if (dir) {
-        console.log("dir:", dir);
         MODULES_DIR = path.resolve(dir);
     }
     console.log("Finding modules under " + MODULES_DIR);
