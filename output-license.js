@@ -52,7 +52,7 @@ function walkDirAsync (dir, name, level) {
     });
 }
 
-function findLicenses(dir) {
+function findLicenses(dir, refJson) {
     if (dir) {
         MODULES_DIR = path.resolve(dir);
     }
@@ -99,6 +99,10 @@ function findLicenses(dir) {
                         } else {
                             log.warn('findLicenses()#getRegistryInfo()', 'no license info : ' + moduleInfo.getName() + ', pkgFile:', moduleInfo.getPkgFile());
                         }
+
+                        if (refJson && refJson[moduleInfo.getName()]) {
+                            moduleInfo.setLicense(refJson[moduleInfo.getName()]);
+                        }
                         return moduleInfo;
                     })
             } else {
@@ -107,7 +111,6 @@ function findLicenses(dir) {
         })
     })
     .then( (moduleInfos) => {
-        //console.log("moduleInfos:", moduleInfos);
         var licMap = {};
         moduleInfos.forEach( (moduleInfo) => {
             var id = moduleInfo.getName() + '-' + moduleInfo.getVersion();

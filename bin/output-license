@@ -1,10 +1,23 @@
 #!/usr/bin/env node
 
-var path = require('path');
+var path = require('path'),
+    fs = require('fs');
 var findLicense = require('../output-license.js');
 var dir = path.join(__dirname, '../node_modules');
 if (process.argv.length > 2) {
     dir = path.resolve(process.argv[2]);
 }
-findLicense(dir);
+
+var refJson;
+if (process.argv.length > 3) {
+    try {
+        refJson = JSON.parse(fs.readFileSync(path.resolve(process.argv[3])));
+        console.log("Reference JSON license file: " + process.argv[3]);
+    } catch(e) {
+        console.warn("Exception occurs on parsing " + process.argv[3]);
+        console.warn("Error:", e);
+    };
+}
+
+findLicense(dir, refJson);
 

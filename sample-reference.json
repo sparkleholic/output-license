@@ -1,0 +1,14 @@
+{
+    "shell-source": "WTFPL",
+    "buffer-crc32": "MIT/X11",
+    "ms": "MIT",
+    "mime": "MIT",
+    "formidable": "MIT",
+    "mime": "MIT",
+    "charenc": "BSD-Claus3",
+    "crypt": "BSD-Claus3",
+    "nomnom": "MIT",
+    "cycle": "Public-Domain",
+    "stack-trace": "MIT",
+    "dtrace-provider": "BSD-Claus3"
+}
