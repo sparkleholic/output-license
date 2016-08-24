@@ -4,6 +4,7 @@ Usage:
 Options:
   -d, --dir PATH            Location of node_modules (default ./)
   -r, --ref-json PATH       Location of a reference json file
+  -s, --save PATH           File name to save the output data.
   -h, --help                Display help and usage details
 
 Descriptions:

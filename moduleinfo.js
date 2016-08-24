@@ -49,8 +49,31 @@ ModuleInfo.prototype = {
     getPkgFile: function() {
         return this.pkgFile;
     },
-    getDetail: function() {
-        return this.getDetail;
+    getDetail: function(key) {
+        if (key) {
+            return this.detail[key];
+        }
+        return this.detail;
+    },
+    addDetail: function(prop) {
+        if (typeof prop === 'object') {
+            for (var i in prop) {
+                if (!this.detail.hasOwnProperty(i)) {
+                    if (typeof prop[i] === 'object') {
+                        var sObj = prop[i];
+                        var dObj = sObj.constructor();
+                        for (var attr in sObj) {
+                            if (sObj.hasOwnProperty(attr)) {
+                                dObj[attr] = sObj[attr];
+                            }
+                        }
+                        this.detail[i] = dObj;
+                    } else {
+                        this.detail[i] = prop[i];
+                    }
+                }
+            }
+        }
     },
     setName: function(name) {
         this.name = name;

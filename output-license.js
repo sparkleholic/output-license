@@ -17,7 +17,7 @@ var Promise = require("bluebird"),
     vm = require('vm'),
     exec = require('child_process').exec,
     log = require('npmlog'),
-    Table = require('cli-table');
+    Table = require('cli-table')
 
 var ModuleInfo = require('./moduleinfo');
 
@@ -48,7 +48,7 @@ function walkDirAsync (dir, name, level) {
     });
 }
 
-function findLicenses(options) {
+function findLicenses(options, callback) {
     var refJson = options.refJson || null;
     if (options.dir) {
         MODULES_DIR = path.resolve(options.dir);
@@ -72,34 +72,46 @@ function findLicenses(options) {
     })
     .then( (moduleInfos) => {
         return Promise.all(moduleInfos).map( (moduleInfo) => {
-            if (!moduleInfo.getLicense()) {
+            var licenseInfo = moduleInfo.getLicense(),
+                repositoryInfo = moduleInfo.getDetail('repository') || moduleInfo.getDetail('homepage');
+            if (!licenseInfo || !repositoryInfo) {
                 return getRegistryInfo(moduleInfo.getName())
                     .then( (info) => {
-                        if (info.licenses) {
-                            if (Array.isArray(info.licenses) && info.licenses[0]) {
-                                if ('object' === typeof info.licenses[0] && info.licenses[0]['type']) {
-                                    moduleInfo.setLicense(info.licenses[0]['type']);
-                                } else if ('string' === typeof info.licenses[0]) {
-                                    moduleInfo.setLicense(info.licenses[0]);
-                                } else {
-                                    log.warn('findLicenses()#getRegistryInfo()#info.license:', 'no license info : ' + moduleInfo.getName());
+                        if (!licenseInfo) {
+                            if (info.licenses) {
+                                if (Array.isArray(info.licenses) && info.licenses[0]) {
+                                    if ('object' === typeof info.licenses[0] && info.licenses[0]['type']) {
+                                        moduleInfo.setLicense(info.licenses[0]['type']);
+                                    } else if ('string' === typeof info.licenses[0]) {
+                                        moduleInfo.setLicense(info.licenses[0]);
+                                    } else {
+                                        log.warn('findLicenses()#getRegistryInfo()#info.license:', 'no license info : ' + moduleInfo.getName());
+                                    }
                                 }
-                            }
-                        } else if (info.license) {
-                            if (typeof info.license === 'object' && info.license['type']) {
-                                moduleInfo.setLicense(info.license['type']);
-                            } else if (typeof info.license === 'string') {
-                                moduleInfo.setLicense(info.license);
+                            } else if (info.license) {
+                                if (typeof info.license === 'object' && info.license['type']) {
+                                    moduleInfo.setLicense(info.license['type']);
+                                } else if (typeof info.license === 'string') {
+                                    moduleInfo.setLicense(info.license);
+                                } else {
+                                    log.warn('findLicenses()#getRegistryInfo()#info.license:', 'invalid license type : ' + info.license + ' , ' + moduleInfo.getName());
+                                }
                             } else {
-                                log.warn('findLicenses()#getRegistryInfo()#info.license:', 'invalid license type : ' + info.license + ' , ' + moduleInfo.getName() );
+                                log.warn('findLicenses()#getRegistryInfo()', 'no license info : ' + moduleInfo.getName() + ', pkgFile:', moduleInfo.getPkgFile());
                             }
-                        } else {
-                            log.warn('findLicenses()#getRegistryInfo()', 'no license info : ' + moduleInfo.getName() + ', pkgFile:', moduleInfo.getPkgFile());
+                            if (refJson && refJson[moduleInfo.getName()]) {
+                                moduleInfo.setLicense(refJson[moduleInfo.getName()]);
+                            }
+                        }
+                        if (!repositoryInfo) {
+                            if (info.homepage){
+                                moduleInfo.addDetail({homepage: info.homepage});
+                            }
+                            if (info.repository){
+                                moduleInfo.addDetail({repository: info.repository});
+                            }
                         }
 
-                        if (refJson && refJson[moduleInfo.getName()]) {
-                            moduleInfo.setLicense(refJson[moduleInfo.getName()]);
-                        }
                         return moduleInfo;
                     })
             } else {
@@ -117,9 +129,14 @@ function findLicenses(options) {
                 licMap[license].push(id);
             }
         });
-        return licMap;
+        return {
+            licMap: licMap,
+            moduleInfos: moduleInfos
+        }
     })
-    .then( (licMap) => {
+    .then( (data) => {
+        var licMap = data.licMap;
+        var moduleInfos = data.moduleInfos;
         var table = new Table( {
             head: [ 'LICENSE', 'node_modules'],
             colWidths: [43, 60]
@@ -129,6 +146,9 @@ function findLicenses(options) {
                 , licMap[lic].join('\n')]);
         }
         console.log(table.toString());
+        if (callback && typeof callback === 'function') {
+            callback(data);
+        }
     })
 }
 

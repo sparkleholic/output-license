@@ -2,6 +2,7 @@
 
 var path = require('path'),
     fs = require('fs'),
+    csv = require('to-csv'),
     nopt = require('nopt'),
     help = require('help')(path.join(__dirname, 'help.txt'));
 var findLicense = require('../output-license.js');
@@ -9,12 +10,14 @@ var dir, refJson;
 var knownOpts = {
         "help": Boolean,
         "dir": path,
-        "ref-json": [path]
+        "ref-json": [path],
+        "save": path
     },
     shortHands = {
         "h": ["--help"],
         "d": ["--dir"],
-        "r": ["--ref-json"]
+        "r": ["--ref-json"],
+        "s": ["--save"]
     },
     args = nopt(knownOpts, shortHands, process.argv, 2);
 
@@ -39,4 +42,42 @@ var options = {
     dir: dir,
     refJson: refJson
 };
-findLicense(options);
+
+function finish(data) {
+    if (args.hasOwnProperty('save') && data.hasOwnProperty('moduleInfos')) {
+        var save = [];
+        data['moduleInfos'].forEach( function(info) {
+            var repo;
+            if (info.detail['repository']) {
+                if (info.detail['repository']['url']) {
+                    repo = info.detail['repository']['url'];
+                } else if (typeof info.detail['repository']) {
+                    repo = info.detail['repository'];
+                }
+                if ( (idx = repo.indexOf('github.com')) !== -1) {
+                    repo = 'https://' + repo.slice(idx, repo.length-4);
+                }
+            } else if (info.detail['homepage']) {
+                repo = info.detail['homepage'];
+            }
+            save.push({
+                name: info.name,
+                version: info.version,
+                license: info.license,
+                location: path.dirname(info.pkgFile),
+                repository: repo
+            });
+        });
+
+        var wFilePath = args['save'] || 'noname';
+        wFilePath = path.resolve(wFilePath);
+        if (path.extname(wFilePath) == '') {
+            wFilePath = wFilePath.concat('.csv');
+        }
+        fs.writeFileSync(wFilePath, csv(save));
+        console.log('Saving data to the ' + wFilePath);
+    }
+    return;
+}
+
+findLicense(options, finish);
