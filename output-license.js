@@ -25,10 +25,6 @@ log.level = 'warn';
 
 var MODULES_DIR = path.join(__dirname, './node_modules');
 
-if (process.argv.length > 2) {
-    MODULES_DIR = path.resolve(process.argv[2]);
-}
-
 function walkDirAsync (dir, name, level) {
     var results = [];
     return fs.readdirAsync(dir).map(function(file) {
