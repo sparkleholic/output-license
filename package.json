@@ -1,6 +1,6 @@
 {
   "name": "output-license",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Output license info of modules existing under node_modules",
   "main": "output-license.js",
   "bin": {
@@ -15,8 +15,8 @@
   "author": "Junil Kim <logyourself@gmail.com>",
   "maintainers": "Junil Kim <logyourself@gmail.com>",
   "repository": {
-      "type": "git",
-      "url": "https://github.com/sparkleholic/output-license"
+    "type": "git",
+    "url": "https://github.com/sparkleholic/output-license"
   },
   "license": "ISC",
   "dependencies": {
