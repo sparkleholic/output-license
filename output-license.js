@@ -52,9 +52,10 @@ function walkDirAsync (dir, name, level) {
     });
 }
 
-function findLicenses(dir, refJson) {
-    if (dir) {
-        MODULES_DIR = path.resolve(dir);
+function findLicenses(options) {
+    var refJson = options.refJson || null;
+    if (options.dir) {
+        MODULES_DIR = path.resolve(options.dir);
     }
     console.log("Finding modules under " + MODULES_DIR);
     walkDirAsync(MODULES_DIR, 'package.json')

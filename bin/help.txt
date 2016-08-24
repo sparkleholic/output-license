@@ -1,0 +1,32 @@
+Usage:
+  output-license [OPTIONS] [ARGS]
+
+Options:
+  -d, --dir PATH            Location of node_modules (default ./)
+  -r, --ref-json PATH       Location of a reference json file
+  -h, --help                Display help and usage details
+
+Descriptions:
+  output-license output the license informations based on the package.json
+  file if 'license' or 'licenses' property exist there.
+  If there is no license info in the file, it execute 'npm' command to find
+  module info based on the module-name like "npm view output-license".
+  If there is 'license' or 'licenses', it takes that info.
+  Finally there is no info, it refers the local file at the 'ref-json' path.
+  The json file should be the following format.
+
+  /** sample of the reference json file **/
+  {
+      "shell-source": "WTFPL",
+      "buffer-crc32": "MIT/X11",
+      "ms": "MIT",
+      "mime": "MIT",
+      "formidable": "MIT",
+      "mime": "MIT",
+      "charenc": "BSD-Claus3",
+      "crypt": "BSD-Claus3",
+      "nomnom": "MIT",
+      "cycle": "Public-Domain",
+      "stack-trace": "MIT",
+      "dtrace-provider": "BSD-Claus3"
+  }

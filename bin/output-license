@@ -1,23 +1,42 @@
 #!/usr/bin/env node
 
 var path = require('path'),
-    fs = require('fs');
+    fs = require('fs'),
+    nopt = require('nopt'),
+    help = require('help')(path.join(__dirname, 'help.txt'));
 var findLicense = require('../output-license.js');
-var dir = path.join(__dirname, '../node_modules');
-if (process.argv.length > 2) {
-    dir = path.resolve(process.argv[2]);
+var dir, refJson;
+var knownOpts = {
+        "help": Boolean,
+        "dir": path,
+        "ref-json": [path]
+    },
+    shortHands = {
+        "h": ["--help"],
+        "d": ["--dir"],
+        "r": ["--ref-json"]
+    },
+    args = nopt(knownOpts, shortHands, process.argv, 2);
+
+if (process.argv.length === 2 || args['help']) {
+    return help();
 }
 
-var refJson;
-if (process.argv.length > 3) {
+dir = args['dir'] || path.join(__dirname, '../node_modules');
+dir = path.resolve(dir);
+
+if (args['ref-json']) {
     try {
-        refJson = JSON.parse(fs.readFileSync(path.resolve(process.argv[3])));
-        console.log("Reference JSON license file: " + process.argv[3]);
+        refJson = JSON.parse(fs.readFileSync(path.resolve(args['ref-json'])));
+        console.log("Reference JSON license file: " + args['ref-json']);
     } catch(e) {
-        console.warn("Exception occurs on parsing " + process.argv[3]);
+        console.warn("Exception occurs on parsing " + args['ref-json']);
         console.warn("Error:", e);
     };
 }
 
-findLicense(dir, refJson);
-
+var options = {
+    dir: dir,
+    refJson: refJson
+};
+findLicense(options);

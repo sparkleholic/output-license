@@ -49,6 +49,9 @@ ModuleInfo.prototype = {
     getPkgFile: function() {
         return this.pkgFile;
     },
+    getDetail: function() {
+        return this.getDetail;
+    },
     setName: function(name) {
         this.name = name;
     },
