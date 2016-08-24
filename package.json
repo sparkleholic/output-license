@@ -1,6 +1,6 @@
 {
   "name": "output-license",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Output license info of modules existing under node_modules",
   "main": "output-license.js",
   "bin": {
