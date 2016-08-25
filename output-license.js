@@ -111,7 +111,9 @@ function findLicenses(options, callback) {
                                 moduleInfo.addDetail({repository: info.repository});
                             }
                         }
-
+                        return moduleInfo;
+                    }, (error) => {
+                        log.warn('findLicenses()#getRegistryInfo()#error:', 'ignoring errors of ' + moduleInfo.getName());
                         return moduleInfo;
                     })
             } else {
@@ -153,10 +155,10 @@ function findLicenses(options, callback) {
 }
 
 function getRegistryInfo(name) {
-    return new Promise( (resolve, reject) => {
+    return new Promise((resolve, reject) => {
         exec('npm view ' + name, (error, stdout, stderr) => {
             if (error) {
-                log.warn('getRegistryInfo()', 'Error occurs onquerying registry info:' + name);
+                log.warn('getRegistryInfo()', 'Error occurs on querying registry info:' + name);
                 return reject(error);
             }
             var sandbox = {};

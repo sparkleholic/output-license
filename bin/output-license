@@ -25,6 +25,16 @@ if (process.argv.length === 2 || args['help']) {
     return help();
 }
 
+if (process.argv.length === 3 && args.argv['remain'].length === 1) {
+    console.log("no --dir option was used, but considering " + args.argv['remain'] + " as a location");
+    args['dir'] = args.argv['remain'].shift();
+}
+
+if (args.argv['remain'].length > 0) {
+    console.warn("Please check the command options.\n");
+    return help();
+}
+
 dir = args['dir'] || path.join(__dirname, '../node_modules');
 dir = path.resolve(dir);
 
