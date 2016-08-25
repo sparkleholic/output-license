@@ -12,6 +12,7 @@
   "keywords": [
     "license"
   ],
+  "engines" : { "node" : ">=0.4.0" } ,
   "author": "Junil Kim <logyourself@gmail.com>",
   "maintainers": "Junil Kim <logyourself@gmail.com>",
   "repository": {
