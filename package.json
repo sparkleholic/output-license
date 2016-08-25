@@ -1,6 +1,6 @@
 {
   "name": "output-license",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Output license info of modules existing under node_modules",
   "main": "output-license.js",
   "bin": {
@@ -12,7 +12,9 @@
   "keywords": [
     "license"
   ],
-  "engines" : { "node" : ">=0.4.0" } ,
+  "engines": {
+    "node": ">=0.4.0"
+  },
   "author": "Junil Kim <logyourself@gmail.com>",
   "maintainers": "Junil Kim <logyourself@gmail.com>",
   "repository": {
